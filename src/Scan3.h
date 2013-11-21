@@ -3,13 +3,13 @@
 
 class Scan3 {
     private:
-        double* x_coor;
-        double* y_coor;
-        double* z_coor;
+        float* x_coor;
+        float* y_coor;
+        float* z_coor;
 
     public:
         Scan3(int size);
-        void add_point(double x, double y, double z, int index);
+        void add_point(float x, float y, float z, int index);
         double* get_end_point(int index);
 };
 #endif
