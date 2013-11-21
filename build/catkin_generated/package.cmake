@@ -1,7 +1,0 @@
-set(_CATKIN_CURRENT_PACKAGE "octoslam")
-set(octoslam_MAINTAINER "lasertest <lasertest@todo.todo>")
-set(octoslam_DEPRECATED "")
-set(octoslam_VERSION "0.0.0")
-set(octoslam_BUILD_DEPENDS "roscpp" "rospy" "std_msgs")
-set(octoslam_RUN_DEPENDS "roscpp" "rospy" "std_msgs")
-set(octoslam_BUILDTOOL_DEPENDS "catkin")

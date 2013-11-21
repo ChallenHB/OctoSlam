@@ -1,2 +1,0 @@
-- setup-file:
-    local-name: /home/lasertest/catkin_ws/src/octoslam/build/devel/setup.sh

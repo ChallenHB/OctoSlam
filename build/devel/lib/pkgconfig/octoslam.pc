@@ -1,8 +1,0 @@
-prefix=/home/lasertest/catkin_ws/src/octoslam/build/devel
-
-Name: octoslam
-Description: Description of octoslam
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/lasertest/catkin_ws/src/octoslam/build/devel/lib 
-Requires: 
