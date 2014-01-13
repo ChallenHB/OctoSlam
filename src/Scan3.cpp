@@ -1,9 +1,10 @@
 #include "Scan3.h"
 
-Scan3::Scan3(int size) {
-    x_coor = new float[size];
-    y_coor = new float[size];
-    z_coor = new float[size];
+Scan3::Scan3(int s) {
+    size = s;
+    x_coor.resize(s);
+    y_coor.resize(s);
+    z_coor.resize(s);
 }
 
 void Scan3::add_point(float x, float y, float z, int index) {
@@ -12,9 +13,9 @@ void Scan3::add_point(float x, float y, float z, int index) {
     z_coor[index] = z;
 }
 
-float* Scan3::get_end_point(int index) {
-    double point[3];
-    point[0] = x_coor[index];
-    point[1] = y_coor[index];
-    point[2] = z_coor[index];
+std::vector<float> Scan3::get_end_point(int index) {
+    std::vector<float> point;
+    point.push_back(x_coor.at(index));
+    point.push_back(y_coor.at(index));
+    point.push_back(z_coor.at(index));
 }

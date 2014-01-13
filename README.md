@@ -2,3 +2,5 @@ OctoSlam
 ========
 
 OctoSlam
+classes:
+- 
