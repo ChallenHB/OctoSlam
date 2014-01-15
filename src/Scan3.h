@@ -1,5 +1,7 @@
 #ifndef SCAN3
 #define SCAN3
+
+#include <vector>
 // Scan3 is a a class that holds the endpoints of each incoming scan in 3D Cartesian coordinates. 
 class Scan3 {
     private:
@@ -7,7 +9,7 @@ class Scan3 {
         int size;
         std::vector<float> x_coor;
         std::vector<float> y_coor;
-        std::vecotr<float> z_coor;
+        std::vector<float> z_coor;
 
     public:
         Scan3(int size);
@@ -15,5 +17,6 @@ class Scan3 {
         void add_point(float x, float y, float z, int index);
         // returns a desired point from the
         std::vector<float> get_end_point(int index);
+        void print();
 };
 #endif

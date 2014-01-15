@@ -1,4 +1,5 @@
 #include "Scan3.h"
+#include <iostream>
 
 Scan3::Scan3(int s) {
     size = s;
@@ -18,4 +19,10 @@ std::vector<float> Scan3::get_end_point(int index) {
     point.push_back(x_coor.at(index));
     point.push_back(y_coor.at(index));
     point.push_back(z_coor.at(index));
+}
+
+void Scan3::print() {
+    for (int i = 0; i < size; i++) {
+        std::cout << "x: " << x_coor.at(i) << ", y: " << y_coor.at(i) << ", z: " << z_coor.at(i) << std::endl;
+    }
 }
