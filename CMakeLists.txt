@@ -105,7 +105,7 @@ include_directories(
 ## Declare a cpp executable
 # add_executable(octoslam_node src/octoslam_node.cpp)
 #add_executable(Scan3 src/Scan3.cpp)
-add_executable(Tester src/Tester.cpp src/Scan3.cpp)
+add_executable(Tester src/Tester.cpp src/Scan3.cpp src/transformScan.cpp)
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(octoslam_node octoslam_generate_messages_cpp)
