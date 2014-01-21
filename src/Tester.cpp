@@ -5,7 +5,7 @@
 #include "Scan3.h"
 #include "transformScan.h"
 
-class TestCode {
+class TestTransform {
     private:
         ros::NodeHandle node;
         ros::Subscriber vrpn_sub;
@@ -38,9 +38,33 @@ class TestCode {
 
         void scan_callback(sensor_msgs::LaserScan::ConstPtr &scan) {
             Scan3* new_pose = transform::transform_scan(scan, current_pose);
-            new_pose.print();
+            new_pose->print();
         }
-    
+};
+
+class TestFunc {
+	private:
+		ros::NodeHandle node;
+		ros::Subscriber scan_sub;
+		std::vector<double> const_pose(6);
+
+	public:
+		TestFunc(ros::NodeHandle n): node(n) {
+			const_pose = { 0, 0, 0, 0, 0, 0};
+			scan_sub = node.subscribe("scan", 1000, callback);
+		}
+	
+		void callback(sensor_msgs::LaserScan::ConstPtr &scan) {
+			Scan3* new_pose = transform::transform_scan(scan, current_pose);
+			new_pose->print();
+		}
+};
+
 int main(int argc, char** argv) {
     // subscriber code is now taken care of, now just need to write main code initalization TestCode    
+	ros::init(argc, argv, "TestCode");
+	ros::NodeHandle n;
+	// TestCode tc(n);
+	TestFunc fc(n);
+	ros::spin();
 }

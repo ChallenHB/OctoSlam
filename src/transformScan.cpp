@@ -1,3 +1,5 @@
+// I have not run this program to check if it crashes
+// I have not test to see if the output is correct
 #include <Eigen/Dense>
 #include <math.h>
 #include "transformScan.h"
