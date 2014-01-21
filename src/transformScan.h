@@ -4,9 +4,9 @@
 #include <vector>
 #include <sensor_msgs/LaserScan.h>
 #include "Scan3.h"
-using namespace transform {
+namespace transform {
 
-Scan3* transform_scan(sensor_msgs::LaserScan::ConstPtr &scan, std::vector<float> current);
+    Scan3* transform_scan(const sensor_msgs::LaserScan::ConstPtr &scan, std::vector<double> current);
 }
 #endif
 

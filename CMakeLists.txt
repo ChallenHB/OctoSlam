@@ -111,9 +111,9 @@ add_executable(Tester src/Tester.cpp src/Scan3.cpp src/transformScan.cpp)
 # add_dependencies(octoslam_node octoslam_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(octoslam_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(Tester
+   ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##

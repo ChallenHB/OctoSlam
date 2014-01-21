@@ -4,7 +4,7 @@
 #include <math.h>
 #include "transformScan.h"
 
-void set_yaw_rot(Eigen::Matrix3f yaw_rot, double yaw) {
+void set_yaw_rot(Eigen::Matrix3d yaw_rot, double yaw) {
 	yaw_rot(0, 0) = cos(yaw);
 	yaw_rot(0, 1) = -sin(yaw);
 	yaw_rot(0, 2) = 0;
@@ -16,7 +16,7 @@ void set_yaw_rot(Eigen::Matrix3f yaw_rot, double yaw) {
 	yaw_rot(2, 2) = 1;
 }
 	
-void set_roll_rot(Eigen::Matrix3f roll_rot, double roll) {
+void set_roll_rot(Eigen::Matrix3d roll_rot, double roll) {
 	roll_rot(0, 0) = cos(roll);
 	roll_rot(0, 1) = 0;
 	roll_rot(0, 2) = sin(roll);
@@ -28,7 +28,7 @@ void set_roll_rot(Eigen::Matrix3f roll_rot, double roll) {
 	roll_rot(2, 2) = cos(roll);
 }
 	
-void set_pitch_rot(Eigen::Matrix3f pitch_rot, double pitch) {
+void set_pitch_rot(Eigen::Matrix3d pitch_rot, double pitch) {
 	pitch_rot(0, 0) = cos(pitch);
 	pitch_rot(0, 1) = -sin(pitch);
 	pitch_rot(0, 2) = 0;
@@ -55,7 +55,7 @@ void set_translate(Eigen::Matrix<double, 3, 4> translate, double x, double y, do
 	translate(2, 3) = z;
 }
 
-Scan3* transform::transform_scan(sensor_msgs::LaserScan::ConstPtr &scan, std::vector<double> current) {
+Scan3* transform::transform_scan(const sensor_msgs::LaserScan::ConstPtr &scan, std::vector<double> current) {
 	float diff = scan->angle_max - scan->angle_min;
 	float sizef = diff / scan->angle_increment;
 	float angle =  scan->angle_min;
@@ -74,14 +74,14 @@ Scan3* transform::transform_scan(sensor_msgs::LaserScan::ConstPtr &scan, std::ve
 			continue;
 		}
 		float range = scan->ranges[i];
-		Eigen::Vector3f endpoints;
+		Eigen::Vector3d endpoints;
 		endpoints(0) = range * cos(angle);
 		endpoints(1) = range * sin(angle);
 		endpoints(2) = 0;
 		endpoints = yaw_rot * endpoints;
 		endpoints = roll_rot * endpoints;
 		endpoints = pitch_rot * endpoints;
-		Eigen::Vector4f addon;
+		Eigen::Vector4d addon;
 		addon(0) = endpoints(0);
 		addon(1) = endpoints(1);
 		addon(2) = endpoints(2);
