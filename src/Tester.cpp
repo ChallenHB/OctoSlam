@@ -5,7 +5,7 @@
 #include "Scan3.h"
 #include "transformScan.h"
 // This class is used to test to see if the code performs the Transform correctly
-/*class TestTransform {
+class TestTransform {
     private:
         ros::NodeHandle node;
         ros::Subscriber vrpn_sub;
@@ -14,11 +14,12 @@
     
     public:
         TestTransform(ros::NodeHandle n): node(n) {
+            current_pose.resize(6);
             vrpn_sub = node.subscribe("Brain5/pose", 1000, &TestTransform::vrpn_callback, this);
             scan_sub = node.subscribe("scan", 1000, &TestTransform::scan_callback, this);
         }
 
-        void vrpn_callback(geometry_msgs::TransformStamped::ConstPtr &pose) {
+        void vrpn_callback(const geometry_msgs::TransformStamped::ConstPtr &pose) {
             current_pose.at(0) = pose->transform.translation.x;
             current_pose.at(1) = pose->transform.translation.y;
             current_pose.at(2) = pose->transform.translation.z;
@@ -36,11 +37,11 @@
             current_pose.at(5) = atan2(yawtop, yawbot);
         }
 
-        void scan_callback(sensor_msgs::LaserScan::ConstPtr &scan) {
-            Scan3* new_pose = transform::transform_scan(scan, current_pose);
-            new_pose->print();
+        void scan_callback(const sensor_msgs::LaserScan::ConstPtr &scan) {
+            Scan3 new_pose = transform::transform_scan(scan, current_pose);
+            new_pose.print();
         }
-};*/
+};
 // This class tests to see if the transform crashes when it's run
 class TestCrash {
 	private:
@@ -60,8 +61,8 @@ class TestCrash {
 		}
 	
 		void callback(const sensor_msgs::LaserScan::ConstPtr &scan) {
-			Scan3* new_pose = transform::transform_scan(scan, const_pose);
-			new_pose->print();
+			Scan3 new_pose = transform::transform_scan(scan, const_pose);
+			new_pose.print();
 		}
 };
 

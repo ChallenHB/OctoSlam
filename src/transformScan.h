@@ -6,7 +6,7 @@
 #include "Scan3.h"
 namespace transform {
 
-    Scan3* transform_scan(const sensor_msgs::LaserScan::ConstPtr &scan, std::vector<double> current);
+    Scan3 transform_scan(const sensor_msgs::LaserScan::ConstPtr &scan, std::vector<double> current);
 }
 #endif
 

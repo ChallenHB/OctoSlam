@@ -1,9 +1,10 @@
-// I have not test to see if the output is correct, although I feel pretty comfortable that it should be working correctly
+// I have not run this program to check if it crashes
+// I have not test to see if the output is correct
 #include <Eigen/Dense>
 #include <math.h>
 #include "transformScan.h"
 
-Eigen::Matrix3d set_yaw(double yaw) {
+Eigen::Matrix3d set_yaw_rot(double yaw) {
     Eigen::Matrix3d rot; 
 	rot(0, 0) = cos(yaw);
 	rot(0, 1) = -sin(yaw);
@@ -17,7 +18,7 @@ Eigen::Matrix3d set_yaw(double yaw) {
     return rot;
 }
 	
-Eigen::Matrix3d set_roll(double roll) {
+Eigen::Matrix3d transform::set_roll_rot(double roll) {
     Eigen::Matrix3d rot;
 	rot(0, 0) = cos(roll);
 	rot(0, 1) = 0;
@@ -31,7 +32,7 @@ Eigen::Matrix3d set_roll(double roll) {
     return rot;
 }
 	
-Eigen::Matrix3d set_pitch(double pitch) {
+Eigen::Matrix3d set_pitch_rot(double pitch) {
     Eigen::Matrix3d rot;
 	rot(0, 0) = cos(pitch);
 	rot(0, 1) = -sin(pitch);
@@ -45,8 +46,7 @@ Eigen::Matrix3d set_pitch(double pitch) {
     return rot;
 }
 	
-Eigen::Matrix<double, 3, 4> set_translate(double x, double y, double z) {
-    Eigen::Matrix<double, 3, 4> translate;
+void set_translate(Eigen::Matrix<double, 3, 4> translate, double x, double y, double z) {
 	translate(0, 0) = 1;
 	translate(0, 1) = 0;
 	translate(0, 2) = 0;
@@ -59,7 +59,6 @@ Eigen::Matrix<double, 3, 4> set_translate(double x, double y, double z) {
 	translate(2, 1) = 0;
 	translate(2, 2) = 1;
 	translate(2, 3) = z;
-    return translate;
 }
 
 Scan3 transform::transform_scan(const sensor_msgs::LaserScan::ConstPtr &scan, std::vector<double> current) {
@@ -68,14 +67,16 @@ Scan3 transform::transform_scan(const sensor_msgs::LaserScan::ConstPtr &scan, st
 	float angle =  scan->angle_min;
 	int size = int(sizef);
 	Scan3 ret(size);
-	Eigen::Matrix3d roll = set_roll(current.at(3));
-	Eigen::Matrix3d pitch = set_pitch(current.at(4));
-	Eigen::Matrix3d yaw = set_yaw(current.at(5));
-	Eigen::Matrix<double, 3, 4> translate = set_translate(current.at(0), current.at(1), current.at(2));
+	Eigen::Matrix3d roll_rot;
+	Eigen::Matrix3d pitch_rot;
+	Eigen::Matrix3d yaw_rot;
+	Eigen::Matrix<double, 3, 4> translate; 
+	set_roll_rot(roll_rot, current.at(3));// roll angle is third index
+	set_pitch_rot(pitch_rot, current.at(4));// rot "  "  "  " "
+	set_yaw_rot(yaw_rot, current[5]);
+	set_translate(translate, current.at(0), current.at(1), current.at(2));
 	for (int i = 0; i < size; i++) {
 		if (scan->ranges[i] < scan->range_min || scan->ranges[i] > scan->range_max) {
-            ret.add_point(-1, -1, -1, i);
-            // I'm not entirely sure what I should do here. I think for now, I'm just going to leave it as -1, and I will have to ignore these points later in the algorithm
 			continue;
 		}
 		float range = scan->ranges[i];
@@ -83,9 +84,9 @@ Scan3 transform::transform_scan(const sensor_msgs::LaserScan::ConstPtr &scan, st
 		endpoints(0) = range * cos(angle);
 		endpoints(1) = range * sin(angle);
 		endpoints(2) = 0;
-		endpoints = yaw * endpoints;
-		endpoints = roll * endpoints;
-		endpoints = pitch * endpoints;
+		endpoints = yaw_rot * endpoints;
+		endpoints = roll_rot * endpoints;
+		endpoints = pitch_rot * endpoints;
 		Eigen::Vector4d addon;
 		addon(0) = endpoints(0);
 		addon(1) = endpoints(1);
