@@ -9,12 +9,24 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
 )
+find_package(octomap REQUIRED)
+include_directories(${OCTOMAP_INCLUDE_DIRS})
+link_libraries(${OCTOMAP_LIBRARIES})
+link_directories(${OCTOMAP_LIBRARY_DIRS})
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+)
 
-## System dependencies are found with CMake's conventions
+add_executable(Tester src/Tester.cpp src/Scan3.cpp src/transformScan.cpp)
+add_executable(read_map src/read_map.cpp)
+target_link_libraries(Tester
+   ${catkin_LIBRARIES}
+)
+#target_link_libraries(read_map ${OCTOMAP_LIBRARIES})
+# System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
-
-## Uncomment this if the package has a setup.py. This macro ensures
+# Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
 # catkin_python_setup()
@@ -93,9 +105,6 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
-include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
 
 ## Declare a cpp library
 # add_library(octoslam
@@ -105,16 +114,13 @@ include_directories(
 ## Declare a cpp executable
 # add_executable(octoslam_node src/octoslam_node.cpp)
 #add_executable(Scan3 src/Scan3.cpp)
-add_executable(Tester src/Tester.cpp src/Scan3.cpp src/transformScan.cpp)
+
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(octoslam_node octoslam_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(Tester
-   ${catkin_LIBRARIES}
-)
-
+ 
 #############
 ## Install ##
 #############
