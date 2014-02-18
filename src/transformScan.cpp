@@ -61,7 +61,7 @@ Eigen::Matrix<double, 3, 4> set_translate(double x, double y, double z) {
 	translate(2, 3) = z;
     return translate;
 }
-
+// Check to make sure this compiles next time in lab
 std::vector<octomath::Vector3> transform::transform_scan(const sensor_msgs::LaserScan::ConstPtr &scan, std::vector<double> current) {
 	float diff = scan->angle_max - scan->angle_min;
 	float sizef = diff / scan->angle_increment;
@@ -74,7 +74,7 @@ std::vector<octomath::Vector3> transform::transform_scan(const sensor_msgs::Lase
 	Eigen::Matrix<double, 3, 4> translate = set_translate(current.at(0), current.at(1), current.at(2));
 	for (int i = 0; i < size; i++) {
 		if (scan->ranges[i] < scan->range_min || scan->ranges[i] > scan->range_max) {
-            ret.push_back(octomath::Vector3(-1, -1, -1);
+            ret.push_back(octomath::Vector3(-1, -1, -1));
             // I'm not entirely sure what I should do here. I think for now, I'm just going to leave it as -1, and I will have to ignore these points later in the algorithm
 			continue;
 		}
