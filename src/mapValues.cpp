@@ -1,3 +1,5 @@
+#include <octomath/Vector3.h>
+
 using namespace octomath {
 
 Vector3 map_values(octomap::OcTree &tree, Vector3 p, 
@@ -14,4 +16,7 @@ Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3, mres) {
     mv = mvPart0 + mvPart1 + mvPart2 + mvPart3;
     dx = (v3.y() - p.y())/mres * (Mv0 - Mv2) + (p.y() - v0.y())/mres * (Mv1 - Mv3);
     dy = (v1.x() - p.x())/mres * (Mv0 - Mv1) + (p.x() - v2.x())/mres * (Mv2 - Mv3);
-    return Vector3(mv, dx, vy);
+    return Vector3(mv, dx, dy);
+}
+
+}
