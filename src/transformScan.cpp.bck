@@ -62,19 +62,19 @@ Eigen::Matrix<double, 3, 4> set_translate(double x, double y, double z) {
     return translate;
 }
 
-std::vector<octomath::Vector3> transform::transform_scan(const sensor_msgs::LaserScan::ConstPtr &scan, std::vector<double> current) {
+Scan3 transform::transform_scan(const sensor_msgs::LaserScan::ConstPtr &scan, std::vector<double> current) {
 	float diff = scan->angle_max - scan->angle_min;
 	float sizef = diff / scan->angle_increment;
 	float angle =  scan->angle_min;
 	int size = int(sizef);
-    std::vector<octomath::Vector3> ret;
+	Scan3 ret(size);
 	Eigen::Matrix3d roll = set_roll(current.at(3));
 	Eigen::Matrix3d pitch = set_pitch(current.at(4));
 	Eigen::Matrix3d yaw = set_yaw(current.at(5));
 	Eigen::Matrix<double, 3, 4> translate = set_translate(current.at(0), current.at(1), current.at(2));
 	for (int i = 0; i < size; i++) {
 		if (scan->ranges[i] < scan->range_min || scan->ranges[i] > scan->range_max) {
-            ret.push_back(octomath::Vector3(-1, -1, -1);
+            ret.add_point(-1, -1, -1, i);
             // I'm not entirely sure what I should do here. I think for now, I'm just going to leave it as -1, and I will have to ignore these points later in the algorithm
 			continue;
 		}
@@ -94,7 +94,7 @@ std::vector<octomath::Vector3> transform::transform_scan(const sensor_msgs::Lase
 		addon(2) = endpoints(2);
 		addon(3) = 1;
 		endpoints = translate * addon;
-		ret.push_back(octomath::Vector3(endpoints(0), endpoints(1), endpoints(2));
+		ret.add_point(endpoints(0), endpoints(1), endpoints(2), i);
 		angle += scan->angle_increment;
 	}
 	return ret;
