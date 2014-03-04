@@ -1,0 +1,63 @@
+#include <ros/ros.h>
+#include <geometry_msgs/Point.h>
+#include <math.h>
+#include "octoSlamCalcs.h"
+
+Vector3 get_values(octomap::OcTree* map, octomath::Vector3 voxel) {
+    float mres = 5; // figure out how to calculate mres, maybe make it a function
+    std::vector<octomath::Vector3> vectors = calculations::round_voxels(map, voxel);
+    return calculations::calc_map_values(map, voxel, vectors, mres);
+}
+
+class Localization {
+    private:
+        const int ITERATIONS = 5; // Place holder for now
+        ros::NodeHandle node;
+        ros::Subscriber scan_sub;
+        ros::Subscriber aux_sub;// this subscriber takes in the external sensor data
+        std::vector<float> current_pose;
+        octomap::OcTree* map; 
+
+    public: 
+        OctoSlam(ros::NodeHandle n, std::vector<float> init_pose): node(n) {
+            current_pose = init_pose;            
+            scan_sub = node.subscribe("Brain5/pose", 1000, &OctoSlam::scan_callback, this);
+            aux_sub = node.subscriber("sensor_data", 1000, &OctoSlam::sensor_callback, this);
+            // initialize octomap, will probably be premade map
+        }
+
+        void scan_sub(const sensor_msgs::LaserScan::ConstPtr &scan) {
+            /* Everything should be in floats. Seems like it's what most of the classes are
+             * passing in */
+            Eigen::Vector3f T(current_pose.at(0), current_pose.at(1), current_pose.at(5));
+            std::vector<octomath::Vector3> t_scan = calculations::transform_scan(scan, current);
+            Eigen::Matrix3f Hessian;
+            Eigen::Vector3f det;
+            for (int n = 0; n < ITERATIONS; ++n) {
+                Hessian.setZeros();
+                det.setZeros();
+                for (int i = 0; i < t_scan.size(); ++i) {
+                    octomath::Vector3 voxel = t_scan.at(i);
+                    octomath::Vector3 map_values = get_values(tree, voxel);
+                    float mv = map_values.x();
+                    float dx = map_values.y();
+                    float dy = map_values.z();
+                    float gammaPrime = calculations::calc_gamma_prime(current.at(5), voxel.x(), voxel.y(), dx, dy);
+                    Hessian = Hessian + calc_hessian(dx, dy, gammaPrime);
+                    det = det + calc_det(mv, dx, dy, gammaPrime);
+                }
+                T = T + (Hessian * det);
+                Hessian.setZero();
+                det.setZero();
+            }
+            current_pose.at(0) = T(0);
+            current_pose.at(1) = T(1);
+            current_pose.at(5) = T(2);
+        }
+        
+        void sensor_callback(geometry_msgs::Point pose) {
+            current_pose.at(3) = pose.x;
+            current_pose.at(4) = pose.y;
+            current_pose.at(2) = pose.z;
+        }
+}

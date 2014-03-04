@@ -1,13 +1,18 @@
+#include "OctoSlamCalcs.h"
 #include <octomath/Vector3.h>
 
 using namespace octomath {
 
-Vector3 map_values(octomap::OcTree &tree, Vector3 p, 
-Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3, mres) {
-    float Mv0 = tree.search(v0)->getOccupancy(); 
-    float Mv1 = tree.search(v1)->getOccupancy();
-    float Mv2 = tree.search(v2)->getOccupancy();
-    float Mv3 = tree.search(v3)->getOccupancy();
+Vector3 calculations::calc_map_values(octomap::OcTree *map, Vector3 p, 
+std::vector<Vector3> vectors, float mres) {
+    Vector3 v0 = vectors.at(0);
+    Vector3 v1 = vectors.at(1);
+    Vector3 v2 = vectors.at(2);
+    Vector3 v3 = vectors.at(3);
+    float Mv0 = tree->search(v0)->getOccupancy(); 
+    float Mv1 = tree->search(v1)->getOccupancy();
+    float Mv2 = tree->search(v2)->getOccupancy();
+    float Mv3 = tree->search(v3)->getOccupancy();
 
     mvPart0 = (v3.y() - p.y())/mres * (v1.x() - p.x())/(v1.x() - v2.x()) * Mv0;
     mvPart1 = (v3.y() - p.y())/mres * (p.x() - v2.x())/(v1.x() - v2.x()) * Mv1;
