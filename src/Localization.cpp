@@ -23,7 +23,7 @@ void Localization::scan_sub(const sensor_msgs::LaserScan::ConstPtr &scan) {
     std::vector<octomath::Vector3> t_scan = calculations::transform_scan(scan, current);
     Eigen::Matrix3f Hessian;
     Eigen::Vector3f det;
-    octomath::Vector3 voxel;
+    octomath::Vector3 endpoint;
     octomath::Vector3 map_values;
     std::vector<octomath::Vector3> closest; // Rounded voxels
     float mv, dx, dy, gammaP, mres;
@@ -31,12 +31,12 @@ void Localization::scan_sub(const sensor_msgs::LaserScan::ConstPtr &scan) {
         Hessian.setZero();
         det.setZero();
         for (int i = 0; i < t_scan.size(); ++i) {
-            voxel = t_scan.at(i);
-            mres = calculations::calc_mres(map, voxel);
-            closest = calculations::round_voxels(map, voxel, mres);
-            map_values = calculations::calc_map_values(map, voxel, closest, mres);
+            endpoint = t_scan.at(i);
+            mres = calculations::calc_mres(map, endpoint);
+            closest = calculations::round_voxels(endpoint, mres);
+            map_values = calculations::calc_map_values(map, endpoint, closest, mres);
             mv = map_values.x(); dx = map_values.y(); dy = map_values.z();
-            gammaP = calculations::calc_gamma(current.at(GAMMA), voxel.x(), voxel.y(), 
+            gammaP = calculations::calc_gammaP(current.at(GAMMA), endpoint.x(), endpoint.y(), 
                     dx, dy);
             Hessian = Hessian + calculations::calc_hessian(dx, dy, gammaP);
             det = det + calculations::calc_det(mv, dx, dy, gammaP);

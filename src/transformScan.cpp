@@ -1,7 +1,6 @@
 // I have not test to see if the output is correct, although I feel pretty comfortable that it should be working correctly
-#include <Eigen/Dense>
+#include "OctoSlamCalcs.h"
 #include <math.h>
-#include "transformScan.h"
 
 Eigen::Matrix3f set_yaw(float yaw) {
     Eigen::Matrix3f rot; 
