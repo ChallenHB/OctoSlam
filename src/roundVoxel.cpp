@@ -1,7 +1,7 @@
 #include "OctoSlamCalcs.h"
 
 float round(float in, float mres) {
-    float mod = in % res;
+    float mod = fmod(in, mres);
     if (mod > mres/2) return in + mres/2 - mod;
     return in - mod - mres/2;
 }

@@ -17,7 +17,7 @@ Eigen::Matrix3f set_yaw(float yaw) {
 }
 	
 Eigen::Matrix3f set_roll(float roll) {
-    Eigen::Matrix3d rot;
+    Eigen::Matrix3f rot;
 	rot(0, 0) = cos(roll);
 	rot(0, 1) = 0;
 	rot(0, 2) = sin(roll);
@@ -91,7 +91,7 @@ std::vector<octomath::Vector3> calculations::transform_scan(const sensor_msgs::L
 		addon(2) = endpoints(2);
 		addon(3) = 1;
 		endpoints = translate * addon;
-		ret.push_back(octomath::Vector3(endpoints(0), endpoints(1), endpoints(2));
+		ret.push_back(octomath::Vector3(endpoints(0), endpoints(1), endpoints(2)));
 		angle += scan->angle_increment;
 	}
 	return ret;

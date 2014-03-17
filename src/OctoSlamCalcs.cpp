@@ -7,7 +7,7 @@ Eigen::Vector3f calculations::calc_det(float mv, float dx, float dy, float gamma
     ret(0) = dy;
     ret(1) = dx;
     ret(2) = gammaP;
-    return coef * ref;
+    return coef * ret;
 }
 
 Eigen::Matrix3f calculations::calc_hessian(float dx, float dy, float gammaP) {
@@ -35,31 +35,33 @@ octomath::Vector3 calculations::calc_map_values(octomap::OcTree *map, octomath::
     v1 = vectors.at(1);
     v2 = vectors.at(2);
     v3 = vectors.at(3);
-    float Mv0 = tree->search(v0)->getOccupancy();
-    float Mv1 = tree->search(v1)->getOccupancy();
-    float Mv2 = tree->search(v2)->getOccupancy();
-    float Mv3 = tree->search(v3)->getOccupancy();
-    mvPart0 = (v3.y() - p.y())/mres * (v1.x() - p.x())/(v1.x() - v2.x()) * Mv0;
-    mvPart1 = (v3.y() - p.y())/mres * (p.x() - v2.x())/(v1.x() - v2.x()) * Mv1;
-    mvPart2 = (p.y() - v0.y())/mres * (v1.x() - p.x())/(v1.x() - v2.x()) * Mv2;
-    mvPart3 = (p.y() - v0.y())/mres * (p.x() - v2.x())/(v1.x() - v2.x()) * Mv3;
-    mv = mvPart0 + mvPart1 + mvPart2 + mvPart3;
-    dx = (v3.y() - p.y())/mres * (Mv0 - Mv2) + (p.y() - v0.y())/mres * (Mv1 - Mv3);
-    dy = (v1.x() - p.x())/mres * (Mv0 - Mv1) + (p.x() - v2.x())/mres * (Mv2 - Mv3);
+    float Mv0 = map->search(v0)->getOccupancy();
+    float Mv1 = map->search(v1)->getOccupancy();
+    float Mv2 = map->search(v2)->getOccupancy();
+    float Mv3 = map->search(v3)->getOccupancy();
+    float mvPart0 = (v3.y() - p.y())/mres * (v1.x() - p.x())/(v1.x() - v2.x()) * Mv0;
+    float mvPart1 = (v3.y() - p.y())/mres * (p.x() - v2.x())/(v1.x() - v2.x()) * Mv1;
+    float mvPart2 = (p.y() - v0.y())/mres * (v1.x() - p.x())/(v1.x() - v2.x()) * Mv2;
+    float mvPart3 = (p.y() - v0.y())/mres * (p.x() - v2.x())/(v1.x() - v2.x()) * Mv3;
+    float mv = mvPart0 + mvPart1 + mvPart2 + mvPart3;
+    float dx = (v3.y() - p.y())/mres * (Mv0 - Mv2) + (p.y() - v0.y())/mres * (Mv1 - Mv3);
+    float dy = (v1.x() - p.x())/mres * (Mv0 - Mv1) + (p.x() - v2.x())/mres * (Mv2 - Mv3);
     return octomath::Vector3(mv, dx, dy);
 }
 
-float calculations::calc_mres(octomap::ocTree *map, octomath::Vector3 endpoint) {
+float calculations::calc_mres(octomap::OcTree *map, octomath::Vector3 endpoint) {
     octomap::OcTreeKey pointKey, itKey;
     pointKey = map->coordToKey(endpoint);
-    if (pointKey == NULL) return 0; // This will be the error case
-    for (octomap::OcTree::leaf_iterator = map->begin_leafs(), end = map->end_leafs();
+    int depth;
+    if (map->search(endpoint) == NULL) return 0;
+    //if (pointKey == NULL) return 0; // This will be the error case
+    for (octomap::OcTree::leaf_iterator it = map->begin_leafs(), end = map->end_leafs();
             it != end; ++it) {
         itKey = it.getIndexKey();
         if (itKey == pointKey) {
-            int dpeth = map->getTreeDepth() - itKey.getDepth(); // using n = 0 as the base level
+            depth = map->getTreeDepth() - it.getDepth(); // using n = 0 as the base level
             break;
         }
     }
-    return pow(2, depth) * map->resolution;
+    return pow(2, depth) * map->getResolution();
 }

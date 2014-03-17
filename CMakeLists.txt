@@ -16,12 +16,13 @@ link_directories(${OCTOMAP_LIBRARY_DIRS})
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
-
+add_executable(OctoSlam src/OctoSlam.cpp src/OctoSlamCalcs.cpp src/Localization.cpp
+        src/roundVoxel.cpp src/transformScan.cpp) 
 #add_executable(Tester src/Tester.cpp Scan3.cpp src/transformScan.cpp)
-add_executable(read_map src/practice/read_map.cpp)
-#target_link_libraries(Tester
-#   ${catkin_LIBRARIES}
-#)
+#add_executable(read_map src/practice/read_map.cpp)
+target_link_libraries(OctoSlam
+   ${catkin_LIBRARIES}
+)
 #target_link_libraries(read_map ${OCTOMAP_LIBRARIES})
 # System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)

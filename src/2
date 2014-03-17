@@ -47,3 +47,11 @@ void Localization::scan_callback(const sensor_msgs::LaserScan::ConstPtr &scan) {
     current_pose.at(Y) = T(1);
     current_pose.at(GAMMA) = T(2);
 }
+
+int main(int argc, char** argv) {
+    std::vector<float> init(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    ros::init(argc, argv, "Localization", init);
+    ros::NodeHandle n;
+    Localization l(n);
+    ros::spin();
+}
