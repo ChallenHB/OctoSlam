@@ -1,12 +1,12 @@
 <launch>
   <!-- convert the scan data into point clouds --> 
-  <node pkg="mapping_3D" type="scan_to_cloud" name="scan_to_cloud" />
+  <node pkg="octoslam" type="scan_to_cloud" name="scan_to_cloud" />
 
   <!-- run the octomap node to build map-->
   <node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
     <param name="resolution" value=".025" />
 
-    <param name="frame_id" type="string" value="/vrpn" />
+    <param name="frame_id" type="string" value="/vrpn" /> 
 
     <param name="max_sensor_range" value="4.0" />
 

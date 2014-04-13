@@ -8,26 +8,22 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  tf
+  laser_geometry
 )
 
 find_package(Eigen REQUIRED)
 include_directories(${Eigen_INCLUDE_DIRS})
 
-
 find_package(octomap REQUIRED)
 include_directories(${OCTOMAP_INCLUDE_DIRS})
 link_libraries(${OCTOMAP_LIBRARIES})
 link_directories(${OCTOMAP_LIBRARY_DIRS})
+
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
-add_executable(OctoSlam src/OctoSlam.cpp src/OctoSlamCalcs.cpp src/Localization.cpp
-        src/roundVoxel.cpp src/transformScan.cpp) 
-#add_executable(Tester src/Tester.cpp Scan3.cpp src/transformScan.cpp)
-#add_executable(read_map src/practice/read_map.cpp)
-target_link_libraries(OctoSlam
-   ${catkin_LIBRARIES}
-)
+
 #target_link_libraries(read_map ${OCTOMAP_LIBRARIES})
 # System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -118,8 +114,18 @@ catkin_package(
 # )
 
 ## Declare a cpp executable
-# add_executable(octoslam_node src/octoslam_node.cpp)
-#add_executable(Scan3 src/Scan3.cpp)
+add_executable(OctoSlam src/OctoSlam.cpp src/OctoSlamCalcs.cpp src/Localization.cpp
+        src/roundVoxel.cpp src/transformScan.cpp) 
+       
+target_link_libraries(OctoSlam
+   ${catkin_LIBRARIES}
+)
+
+add_executable(scan_to_cloud src/scan_to_cloud.cpp) 
+target_link_libraries(scan_to_cloud
+   ${catkin_LIBRARIES}
+)
+
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -142,11 +148,11 @@ catkin_package(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS octoslam octoslam_node
+ install(TARGETS OctoSlam scan_to_cloud
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+ )
 
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/
@@ -156,11 +162,11 @@ catkin_package(
 # )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
-# install(FILES
-#   # myfile1
+ install(FILES
+    build_map.launch
 #   # myfile2
-#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-# )
+   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+ )
 
 #############
 ## Testing ##
